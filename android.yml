@@ -1,26 +1,23 @@
-name: Gerar APK Trampo Certo
-on: [push, workflow_dispatch]
-
+name: Gerar APK Final
+on: [workflow_dispatch, push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixando o Projeto
-        uses: actions/checkout@v4
-
-      - name: Configurando o Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Criar o APK (Sem Contas Externas)
+          node-version: 18
+      - name: Instalando Ferramentas
         run: |
-          # Esse comando transforma seu App.js direto em um pacote Android
-          npx react-native bundle --platform android --dev false --entry-file App.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
-          
-      - name: Entregar o Arquivo Pronto
+          npm install -g expo-cli
+          npm install
+      - name: Criando Estrutura Android
+        run: npx expo prebuild --platform android
+      - name: Gerar APK
+        run: cd android && ./gradlew assembleRelease
+      - name: Enviar APK Pronto
         uses: actions/upload-artifact@v4
         with:
-          name: APK-Instalador-Trampo-Certo
-          path: "**/*.apk"
+          name: App-Trampo-Certo
+          path: android/app/build/outputs/apk/release/*.apk
