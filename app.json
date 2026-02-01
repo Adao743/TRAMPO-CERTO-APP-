@@ -1,11 +1,16 @@
 {
   "expo": {
     "name": "Trampo Certo",
-    "slug": "trampo-certo",
+    "slug": "trampo-certo-app",
     "version": "1.0.0",
-    "sdkVersion": "50.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "android": {
-      "package": "com.mandroidapp.trampocerto"
+      "package": "com.adao.trampocerto",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
     }
   }
 }
