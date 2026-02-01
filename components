@@ -1,1 +1,42 @@
+import React, { useState } from 'react';
+import { db } from '../services/firebase';
+import { doc, getDoc } from "firebase/firestore";
 
+export default function Chat() {
+  const [input, setInput] = useState("");
+  const [mensagens, setMensagens] = useState([]);
+
+  async function enviar() {
+    if (!input.trim()) return;
+
+    const docRef = doc(db, "respostas", input.toLowerCase().trim());
+    const docSnap = await getDoc(docRef);
+    
+    // Aqui entra sua ideia: se não achar, volta pro objetivo! [cite: 2026-01-28]
+    let botResposta = "Não entendi. Tente 'vagas' ou 'ajuda' para eu te guiar!";
+    if (docSnap.exists()) botResposta = docSnap.data().texto;
+
+    setMensagens([...mensagens, { user: input, bot: botResposta }]);
+    setInput("");
+  }
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
+      <div className="janela-chat" style={{ height: '300px', overflowY: 'auto', border: '1px solid #ddd', marginBottom: '10px', padding: '10px' }}>
+        {mensagens.map((m, i) => (
+          <div key={i} style={{ marginBottom: '10px' }}>
+            <div style={{ color: 'blue' }}><b>Você:</b> {m.user}</div>
+            <div style={{ color: 'green' }}><b>Bot:</b> {m.bot}</div>
+          </div>
+        ))}
+      </div>
+      <input 
+        style={{ width: '80%' }}
+        value={input} 
+        onChange={e => setInput(e.target.value)} 
+        placeholder="Digite algo..."
+      />
+      <button onClick={enviar}>Enviar</button>
+    </div>
+  );
+}
