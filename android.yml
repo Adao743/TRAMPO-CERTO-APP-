@@ -1,20 +1,16 @@
-name: Gerar APK Direto
-on: [push, workflow_dispatch]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Baixando o código
-        uses: actions/checkout@v4
-
-      - name: Instalando o Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Instalando dependências
+- name: Instalando dependências
         run: npm install --legacy-peer-deps
 
-      - name: Construindo o APK
-        run: npx expo export:prebuild --platform android
+      - name: Preparando o Pacote
+        run: npx expo export --platform android --output-dir dist
+
+      - name: Criar ZIP dos arquivos (Caso o APK falhe)
+        run: zip -r trampo-certo.zip dist/
+          
+      - name: Disponibilizar arquivos
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Trampo-Certo-Final
+          path: |
+            dist/*.apk
+            trampo-certo.zip
