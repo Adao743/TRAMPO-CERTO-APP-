@@ -1,1 +1,26 @@
+name: Gerar APK Direto
+on:
+  workflow_dispatch: # Isso permite que você aperte um botão para gerar o app
+  push:
+    branches: [ main ]
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar Dependências
+        run: npm install --legacy-peer-deps
+
+      - name: Fabricar Aplicativo
+        run: |
+          npm install -g expo-cli
+          # Este comando tenta gerar um arquivo de saída simples
+          npx expo export
