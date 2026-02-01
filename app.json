@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Trampo Certo",
+    "slug": "trampo-certo",
+    "version": "1.0.0",
+    "sdkVersion": "50.0.0",
+    "android": {
+      "package": "com.mandroidapp.trampocerto"
+    }
+  }
+}
