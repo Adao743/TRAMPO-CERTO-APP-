@@ -1,16 +1,22 @@
-- name: Instalando dependências
+name: Empacotar Projeto
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixando tudo
+        uses: actions/checkout@v4
+
+      - name: Instalando dependências
         run: npm install --legacy-peer-deps
 
-      - name: Preparando o Pacote
-        run: npx expo export --platform android --output-dir dist
+      - name: Criando Pacote de Entrega
+        # Isso vai criar um arquivo com tudo o que você fez, pronto para virar APK
+        run: zip -r projeto-trampo-certo.zip . -x "*.git*"
 
-      - name: Criar ZIP dos arquivos (Caso o APK falhe)
-        run: zip -r trampo-certo.zip dist/
-          
-      - name: Disponibilizar arquivos
+      - name: Liberar para Download
         uses: actions/upload-artifact@v4
         with:
-          name: App-Trampo-Certo-Final
-          path: |
-            dist/*.apk
-            trampo-certo.zip
+          name: Projeto-Pronto-Para-APK
+          path: projeto-trampo-certo.zip
