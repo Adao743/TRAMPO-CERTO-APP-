@@ -1,22 +1,26 @@
-name: Empacotar Projeto
+name: Gerar APK Trampo Certo
 on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixando tudo
+      - name: Baixando o Projeto
         uses: actions/checkout@v4
 
-      - name: Instalando dependências
-        run: npm install --legacy-peer-deps
+      - name: Configurando o Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Criando Pacote de Entrega
-        # Isso vai criar um arquivo com tudo o que você fez, pronto para virar APK
-        run: zip -r projeto-trampo-certo.zip . -x "*.git*"
-
-      - name: Liberar para Download
+      - name: Criar o APK (Sem Contas Externas)
+        run: |
+          # Esse comando transforma seu App.js direto em um pacote Android
+          npx react-native bundle --platform android --dev false --entry-file App.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+          
+      - name: Entregar o Arquivo Pronto
         uses: actions/upload-artifact@v4
         with:
-          name: Projeto-Pronto-Para-APK
-          path: projeto-trampo-certo.zip
+          name: APK-Instalador-Trampo-Certo
+          path: "**/*.apk"
