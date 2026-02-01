@@ -1,14 +1,20 @@
-name: Gerar APK Final
+name: Gerar APK Direto
 on: [push, workflow_dispatch]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Baixando o código
+        uses: actions/checkout@v4
+
+      - name: Instalando o Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+
       - name: Instalando dependências
-        run: npm install
-      - name: Build APK
-        run: npx expo export --platform android
+        run: npm install --legacy-peer-deps
+
+      - name: Construindo o APK
+        run: npx expo export:prebuild --platform android
