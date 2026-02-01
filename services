@@ -1,14 +1,18 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore"; // Importante para o banco de dados!
 
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  projectId: "SEU_PROJETO_ID",
-  storageBucket: "SEU_PROJETO.appspot.com",
-  messagingSenderId: "SEU_ID",
-  appId: "SEU_APP_ID"
+  apiKey: "AIzaSyBm9dy9MXr9Lg3lNqLX5wzMYuy5iXaiY_Y",
+  authDomain: "prof-da-hora.firebaseapp.com",
+  projectId: "prof-da-hora",
+  storageBucket: "prof-da-hora.firebasestorage.app",
+  messagingSenderId: "124661519863",
+  appId: "1:124661519863:web:600d142f499a0d5def0af2",
+  measurementId: "G-37CWTFVZQ9"
 };
 
+// Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
+
+// Exporta o banco de dados para usar no Chat e no PainelAdmin
 export const db = getFirestore(app);
