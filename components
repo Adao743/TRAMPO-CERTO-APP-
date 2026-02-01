@@ -40,3 +40,49 @@ export default function Chat() {
     </div>
   );
 }
+import React, { useState } from "react";
+import { db } from "../services/firebase";
+import { doc, setDoc } from "firebase/firestore";
+
+export default function PainelAdmin() {
+  const [pergunta, setPergunta] = useState("");
+  const [resposta, setResposta] = useState("");
+
+  async function salvarNoFirebase() {
+    if (!pergunta || !resposta) return alert("Preencha os dois campos!");
+
+    try {
+      // Salva a pergunta como ID do documento para a busca ser instantânea [cite: 2026-01-28]
+      await setDoc(doc(db, "respostas", pergunta.toLowerCase().trim()), {
+        texto: resposta
+      });
+      
+      alert("Sucesso! O Trampo Certo já aprendeu essa resposta.");
+      setPergunta("");
+      setResposta("");
+    } catch (error) {
+      alert("Erro ao conectar com o Firebase. Verifique suas chaves!");
+    }
+  }
+
+  return (
+    <div style={{ padding: '20px', border: '2px solid #007bff', borderRadius: '10px', marginTop: '20px' }}>
+      <h3>⚙️ Painel de Treinamento</h3>
+      <input 
+        style={{ width: '100%', marginBottom: '10px' }}
+        placeholder="Palavra-chave (ex: currículo)" 
+        value={pergunta} 
+        onChange={e => setPergunta(e.target.value)} 
+      />
+      <textarea 
+        style={{ width: '100%', height: '80px', marginBottom: '10px' }}
+        placeholder="O que o robô deve responder?" 
+        value={resposta} 
+        onChange={e => setResposta(e.target.value)} 
+      />
+      <button onClick={salvarNoFirebase} style={{ backgroundColor: '#007bff', color: 'white', padding: '10px', width: '100%' }}>
+        Cadastrar Resposta
+      </button>
+    </div>
+  );
+}
