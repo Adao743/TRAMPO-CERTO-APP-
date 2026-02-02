@@ -5,30 +5,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixando o Projeto
+      - name: Baixando Projeto
         uses: actions/checkout@v4
 
-      - name: Instalando Node e Java
+      - name: Configurando Ambiente
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      
-      - name: Instalando Dependencias
-        run: npm install --legacy-peer-deps
 
-      - name: Criando a Pasta Android
-        # Esse comando cria a estrutura de aplicativo que o GitHub precisa ver
-        run: npx expo prebuild --platform android
+      - name: Instalando Ferramentas
+        run: |
+          npm install -g expo-cli
+          npm install --legacy-peer-deps
 
-      - name: Fabricando o APK (Gradlew)
-        # Aqui é onde o arquivo .apk é cozinhado de verdade
+      - name: Preparando Estrutura Android
+        # Esse comando cria a pasta que o GitHub não está achando
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Fabricando o APK
+        # Comando para gerar o instalador final
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Disponibilizar APK para Download
+      - name: Entregar APK para o Adão
         uses: actions/upload-artifact@v4
         with:
-          name: App-Instalador-TRAMPO-CERTO
+          name: Instalador-Trampo-Certo
           path: android/app/build/outputs/apk/debug/app-debug.apk
