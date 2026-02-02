@@ -1,19 +1,30 @@
-name: Gerar Pacote Final
-on: [push, workflow_dispatch]
+name: Gerar APK Oficial
+on: [workflow_dispatch, push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Coletando arquivos
+      - name: Pegando o Código
         uses: actions/checkout@v4
 
-      - name: Criando Instalador ZIP
-        # Este comando junta o seu App.js e tudo o que mandou num ficheiro só
-        run: zip -r Projeto_Trampo_Certo.zip . -x "*.git*"
+      - name: Configurando Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
 
-      - name: Liberar para Download
+      - name: Instalando Dependências
+        run: npm install --legacy-peer-deps
+
+      - name: Construindo o Projeto (Android)
+        run: |
+          # Esse comando prepara os arquivos para virar APK
+          npx expo export --platform android
+
+      - name: Gerar Artefato APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pacote-Pronto-Adao
-          path: Projeto_Trampo_Certo.zip
+          name: TrampoCerto-Instalador-APK
+          # O caminho onde o arquivo final fica guardado
+          path: dist/*.apk
