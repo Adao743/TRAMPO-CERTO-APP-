@@ -1,26 +1,19 @@
-name: Gerar APK Direto
-on:
-  workflow_dispatch: # Isso permite que você aperte um botão para gerar o app
-  push:
-    branches: [ main ]
+name: Gerar Pacote Final
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do código
+      - name: Coletando arquivos
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - name: Criando Instalador ZIP
+        # Este comando junta o seu App.js e tudo o que mandou num ficheiro só
+        run: zip -r Projeto_Trampo_Certo.zip . -x "*.git*"
+
+      - name: Liberar para Download
+        uses: actions/upload-artifact@v4
         with:
-          node-version: 18
-
-      - name: Instalar Dependências
-        run: npm install --legacy-peer-deps
-
-      - name: Fabricar Aplicativo
-        run: |
-          npm install -g expo-cli
-          # Este comando tenta gerar um arquivo de saída simples
-          npx expo export
+          name: Pacote-Pronto-Adao
+          path: Projeto_Trampo_Certo.zip
