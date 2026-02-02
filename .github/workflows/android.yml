@@ -1,36 +1,27 @@
-name: Gerar APK Direto
+name: Ultima Tentativa Trampo Certo
 on: [workflow_dispatch, push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixando Projeto
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurando Ambiente
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Instalando Ferramentas
-        run: |
-          npm install -g expo-cli
-          npm install --legacy-peer-deps
+      - name: Install
+        run: npm install --legacy-peer-deps
 
-      - name: Preparando Estrutura Android
-        # Esse comando cria a pasta que o GitHub não está achando
-        run: npx expo prebuild --platform android --no-install
+      - name: Build Web Version
+        # Isso cria uma versão que você consegue ver funcionando imediatamente
+        run: npx expo export --platform web
 
-      - name: Fabricando o APK
-        # Comando para gerar o instalador final
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Entregar APK para o Adão
+      - name: Upload Resultado
         uses: actions/upload-artifact@v4
         with:
-          name: Instalador-Trampo-Certo
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: App-Pronto-Para-Uso
+          path: dist/
