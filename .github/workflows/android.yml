@@ -1,34 +1,34 @@
-name: Gerar APK Oficial
+name: Gerar APK Direto
 on: [workflow_dispatch, push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Pegando o Código
+      - name: Baixando o Projeto
         uses: actions/checkout@v4
 
-      - name: Configurando Node.js
+      - name: Instalando Node e Java
         uses: actions/setup-node@v4
         with:
           node-version: 18
-
-      - name: Instalando Dependências
+      
+      - name: Instalando Dependencias
         run: npm install --legacy-peer-deps
 
-      - name: Gerar Bundle Android
-        # Esse comando transforma seu App.js no arquivo que o Android entende
-        run: npx react-native bundle --platform android --dev false --entry-file App.js --bundle-output index.android.bundle
+      - name: Criando a Pasta Android
+        # Esse comando cria a estrutura de aplicativo que o GitHub precisa ver
+        run: npx expo prebuild --platform android
 
-      - name: Criar APK (Debug)
-        # Comando para fabricar o arquivo .apk de verdade
+      - name: Fabricando o APK (Gradlew)
+        # Aqui é onde o arquivo .apk é cozinhado de verdade
         run: |
-          mkdir -p android/app/src/main/assets
-          cp index.android.bundle android/app/src/main/assets/
-          cd android && ./gradlew assembleDebug
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-      - name: Entregar APK para o Adão
+      - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4
         with:
-          name: Trampo-Certo-Instalador
+          name: App-Instalador-TRAMPO-CERTO
           path: android/app/build/outputs/apk/debug/app-debug.apk
