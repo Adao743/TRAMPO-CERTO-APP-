@@ -12,19 +12,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'
 
       - name: Instalando Dependências
         run: npm install --legacy-peer-deps
 
-      - name: Construindo o Projeto (Android)
-        run: |
-          # Esse comando prepara os arquivos para virar APK
-          npx expo export --platform android
+      - name: Gerar Bundle Android
+        # Esse comando transforma seu App.js no arquivo que o Android entende
+        run: npx react-native bundle --platform android --dev false --entry-file App.js --bundle-output index.android.bundle
 
-      - name: Gerar Artefato APK
+      - name: Criar APK (Debug)
+        # Comando para fabricar o arquivo .apk de verdade
+        run: |
+          mkdir -p android/app/src/main/assets
+          cp index.android.bundle android/app/src/main/assets/
+          cd android && ./gradlew assembleDebug
+
+      - name: Entregar APK para o Adão
         uses: actions/upload-artifact@v4
         with:
-          name: TrampoCerto-Instalador-APK
-          # O caminho onde o arquivo final fica guardado
-          path: dist/*.apk
+          name: Trampo-Certo-Instalador
+          path: android/app/build/outputs/apk/debug/app-debug.apk
